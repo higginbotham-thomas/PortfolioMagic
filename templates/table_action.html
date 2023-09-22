@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SMA Signal Buy or Sell Action</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>SMA Signal Buy or Sell Action</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Date</th>
+                <th>Close Price</th>
+                <th>SMA 50</th>
+                <th>SMA 100</th>
+                <th>SMA 200</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in json_data %}
+                <tr>
+                    <td>{{ record.symbol }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.close_price }}</td>
+                    <td>{{ record.sma50 }}</td>
+                    <td>{{ record.sma100 }}</td>
+                    <td>{{ record.sma200 }}</td>
+                    <td>{{ record.action }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
