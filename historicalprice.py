@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 FMPKEY = os.getenv('FMPKEY')
-SYMBOL = ('aapl')
+SYMBOL = 'aapl'
 
 url = f"https://financialmodelingprep.com/api/v3/historical-price-full/AAPL?from=2022-09-20&to=2023-09-20&apikey={FMPKEY}"
 

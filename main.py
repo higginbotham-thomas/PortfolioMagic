@@ -1,4 +1,7 @@
 import functions
-# Example usage with a list of symbols
-symbols = ['AAPL', 'GOOGL', 'MSFT']  # Replace with your desired stock symbols
+
+symbols = ['EOG', 'MET',
+           'SCHX', 'SPDW', 'SCHA', 'USCI', 'DBO', 'DBE',
+           'SPYG', 'IVE', 'EFV', 'EFG', 'EELV', 'FTEC', 'USMV', 'IFRA', 'SPSM', 'MTUM', 'XLE',
+           'TRAIX', 'FSMDX', 'FTIHX', 'FSSNX', 'RNPGX', 'FXAIX', 'DRGTX', 'VEIRX', 'FXNAX']
 results = functions.analyze_stocks(symbols)

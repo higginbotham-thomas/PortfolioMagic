@@ -44,5 +44,3 @@ def analyze_stocks(symbols):
         results.append(result)
 
     return results
-
-
