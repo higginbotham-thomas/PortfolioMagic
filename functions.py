@@ -26,7 +26,7 @@ def analyze_stocks(symbols):
         sma100 = sma100_data['sma']
         sma50 = sma50_data['sma']
 
-        if sma50 > sma200 and sma100 > sma200:
+        if float(sma50) > float(sma100) > float(sma200):
             action = 'BUY'
         else:
             action = 'SELL'
