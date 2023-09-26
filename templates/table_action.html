@@ -35,7 +35,7 @@
             {% for record in json_data %}
                 <tr>
                     <td>{{ record.symbol }}</td>
-                    <td>{{ record.date }}</td>
+                    <td>{{ record.date.strftime('%Y-%m-%d') }}</td>
                     <td>{{ record.close_price }}</td>
                     <td>{{ record.action }}</td>
                 </tr>
