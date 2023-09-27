@@ -21,6 +21,17 @@
 </head>
 <body>
     <h1>SMA Signal Buy or Sell Action</h1>
+    <h2>Selected Account: {{ selected_account }}</h2>
+
+        <form method="POST" action="/">
+        <label for="account">Select an account:</label>
+        <select id="account" name="account">
+            {% for account in unique_accounts %}
+                <option value="{{ account }}">{{ account }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Submit">
+    </form>
 
     <table>
         <thead>

@@ -7,10 +7,12 @@ load_dotenv()
 
 FMPKEY = os.getenv('FMPKEY')
 
+
 def get_jsonparsed_data(url):
     response = requests.get(url)
     data = response.json()
     return data
+
 
 def analyze_stocks(symbols):
     results = []
