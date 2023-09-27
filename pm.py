@@ -42,7 +42,7 @@ def display_json_as_table():
 
     # return render_template('table_action.html', json_data=json_data)
     return render_template('table_action.html', json_data=json_data, unique_accounts=main.unique_accounts,
-                           selected_account=selected_account)
+                           selected_account=main.selected_account)
 
 
 if __name__ == '__main__':
