@@ -24,7 +24,7 @@ def get_jsonparsed_data(url):
 
 def get_sma_data(symbol):
     dfs = []
-    periods = ['50', '100', '200']
+    periods = ['10', '50', '80']
     fmpkey = os.getenv('FMPKEY')
     for period in periods:
         url = f"https://financialmodelingprep.com/api/v3/technical_indicator/daily/{symbol}?period={period}&type=sma&apikey={fmpkey}"
@@ -51,8 +51,8 @@ def get_sma_data(symbol):
     # Calculate the Histogram
     merged_df['histogram'] = merged_df['macd'] - merged_df['signal']
 
-    merged_df = merged_df[['date', 'open', 'high', 'low', 'close', 'sma_50', 'sma_100',
-                           'sma_200', 'macd', 'signal', 'histogram']]
+    merged_df = merged_df[['date', 'open', 'high', 'low', 'close', 'sma_10', 'sma_50',
+                           'sma_80', 'macd', 'signal', 'histogram']]
 
     merged_df = merged_df.sort_values(['date'], ascending=[False])
 

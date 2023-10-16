@@ -23,12 +23,12 @@ def plot_sma(sym_list):
         # Get the SMA data for the current symbol
         sma_data = fndata.get_sma_data(symbol)
 
-        sma_data.loc[(sma_data['sma_50'] > sma_data['sma_200']) & (
-                sma_data['sma_100'] > sma_data['sma_200']), 'Action'] = 'BUY'
+        sma_data.loc[(sma_data['sma_10'] > sma_data['sma_50']) & (
+                sma_data['sma_50'] > sma_data['sma_80']), 'Action'] = 'BUY'
         # & (sma_data['sma_100'] > sma_data['sma_200'])
         # & (sma_data['sma_50'] > sma_data['sma_200'])
-        sma_data.loc[(sma_data['sma_50'] < sma_data['sma_100']), 'Action'] = 'SELL'
-        sma_data.loc[(sma_data['sma_100'] < sma_data['sma_200']), 'Action'] = 'SELL'
+        sma_data.loc[(sma_data['sma_10'] < sma_data['sma_50']), 'Action'] = 'SELL'
+        sma_data.loc[(sma_data['sma_50'] < sma_data['sma_80']), 'Action'] = 'SELL'
         sma_data = sma_data.fillna('')
         # sma_data = sma_data.fillna(method='ffill')
         sma_data["isStatusChanged"] = sma_data["Action"].shift(
@@ -71,7 +71,7 @@ def plot_sma(sym_list):
         axs_macd.bar(plot_data.index, plot_data['histogram'], label='Histogram', color='gray', alpha=0.5)
 
         # Set the y-axis limits for the twin axis
-        ymin = min(plot_data['sma_50'].min(), plot_data['sma_100'].min(), plot_data['sma_200'].min(),
+        ymin = min(plot_data['sma_10'].min(), plot_data['sma_50'].min(), plot_data['sma_80'].min(),
                    plot_data['close'].min(), plot_data['macd'].min(), plot_data['signal'].min())
         ymax = max(plot_data['macd'].max(), plot_data['signal'].max()) + 30
 
@@ -80,11 +80,11 @@ def plot_sma(sym_list):
         # Plot the historical prices and moving averages
         axs[i].plot(plot_data.index, plot_data['close'], label='Close')
         axs[i].plot(plot_data.index,
-                    plot_data['sma_50'], color='green', label='SMA 50')
+                    plot_data['sma_10'], color='green', label='SMA 10')
         axs[i].plot(plot_data.index,
-                    plot_data['sma_100'], color='black', label='SMA 100')
+                    plot_data['sma_50'], color='black', label='SMA 50')
         axs[i].plot(plot_data.index,
-                    plot_data['sma_200'], color='red', label='SMA 200')
+                    plot_data['sma_80'], color='red', label='SMA 80')
 
         # Add checkmarks for buy and sell points
         buy_points = plot_data[(plot_data['isStatusChanged'] == 1) & (
@@ -249,3 +249,4 @@ def plot_candlestick_single(symbol):
                    sell_points['close'], marker='v', s=150, c='red', label='SELL')
 
     plt.show()
+

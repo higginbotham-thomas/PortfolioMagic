@@ -18,17 +18,17 @@ def analyze_stocks(symbols):
     results = []
 
     for symbol in symbols:
-        sma200_data = get_jsonparsed_data(f'https://financialmodelingprep.com/api/v3/technical_indicator/daily/{symbol}?period=200&type=sma&apikey={FMPKEY}')[0]
-        sma100_data = get_jsonparsed_data(f'https://financialmodelingprep.com/api/v3/technical_indicator/daily/{symbol}?period=100&type=sma&apikey={FMPKEY}')[0]
+        sma80_data = get_jsonparsed_data(f'https://financialmodelingprep.com/api/v3/technical_indicator/daily/{symbol}?period=80&type=sma&apikey={FMPKEY}')[0]
         sma50_data = get_jsonparsed_data(f'https://financialmodelingprep.com/api/v3/technical_indicator/daily/{symbol}?period=50&type=sma&apikey={FMPKEY}')[0]
+        sma20_data = get_jsonparsed_data(f'https://financialmodelingprep.com/api/v3/technical_indicator/daily/{symbol}?period=20&type=sma&apikey={FMPKEY}')[0]
 
-        date = sma200_data['date']
-        close = sma200_data['close']
-        sma200 = sma200_data['sma']
-        sma100 = sma100_data['sma']
+        date = sma80_data['date']
+        close = sma80_data['close']
+        sma80 = sma80_data['sma']
         sma50 = sma50_data['sma']
+        sma20 = sma20_data['sma']
 
-        if float(sma50) > float(sma100) > float(sma200):
+        if float(sma20) > float(sma50) > float(sma80):
             action = 'BUY'
         else:
             action = 'SELL'
@@ -37,9 +37,9 @@ def analyze_stocks(symbols):
             'symbol': symbol,
             'date': date,
             'close_price': close,
-            'sma50': sma50,
-            'sma100': sma100,
-            'sma200': sma200,
+            'sma50': sma20,
+            'sma100': sma50,
+            'sma200': sma80,
             'action': action
         }
 

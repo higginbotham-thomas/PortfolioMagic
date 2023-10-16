@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from datetime import datetime
 import main
-import pandas as pd
+#import pandas as pd
 import locale
 import functions
 
@@ -34,11 +34,11 @@ def display_json_as_table():
 
     # Assuming you have pandas DataFrame, you can convert it to HTML
     # If your data is not in a DataFrame, you might need to format it accordingly
-    if isinstance(json_data, pd.DataFrame):
-        table_html = json_data.to_html(classes='table table-striped')
-    else:
+    #if isinstance(json_data, pd.DataFrame):
+    #    table_html = json_data.to_html(classes='table table-striped')
+    #else:
         # Handle non-DataFrame JSON data here
-        table_html = "<p>No data to display</p>"
+    #    table_html = "<p>No data to display</p>"
 
     # return render_template('table_action.html', json_data=json_data)
     return render_template('table_action.html', json_data=json_data, unique_accounts=main.unique_accounts,
