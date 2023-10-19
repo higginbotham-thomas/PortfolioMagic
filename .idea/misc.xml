@@ -2,7 +2,7 @@
 <project version="4">
   <component name="Black">
     <option name="pathToExecutable" value="$USER_HOME$/anaconda3/bin/black" />
-    <option name="sdkUUID" value="4666e5ed-5621-470d-984d-94b506578c92" />
+    <option name="sdkName" value="PortfolioMagic" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="PortfolioMagic" project-jdk-type="Python SDK" />
 </project>
