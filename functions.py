@@ -1,8 +1,9 @@
+"""Module with shared functions for the app"""
 import os
 
+from datetime import datetime, timedelta
 import requests
 import pandas as pd
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,7 +12,10 @@ API_KEY = os.getenv('FMPKEY')
 
 
 # Function to compute buy/sell recommendations
-def compute_buy_sell_recommendations(current_portfolio, acct, highest_sharpe_weights, stocks, stock_history):
+def compute_buy_sell_recommendations(
+        current_portfolio, acct, highest_sharpe_weights, stocks, stock_history
+        ):
+    """Function to compute buy/sell recommendations"""
     # Convert weights to desired monetary value in the portfolio
     desired_values = highest_sharpe_weights * acct
 
@@ -25,7 +29,9 @@ def compute_buy_sell_recommendations(current_portfolio, acct, highest_sharpe_wei
     # Calculate Buy/Sell (rounded value)
     buy_sell_shares = \
         {stock: (desired_shares_decimal[stock]) -
-            current_portfolio[current_portfolio['Symbol'] == stock]['Shares'].values[0] for stock in stocks}
+            current_portfolio[current_portfolio['Symbol'] == stock]['Shares'].values[0] \
+            for stock in stocks
+            }
 
     # Merge current portfolio with desired shares
     merged_portfolio = current_portfolio.merge(pd.DataFrame(
@@ -49,7 +55,8 @@ def compute_buy_sell_recommendations(current_portfolio, acct, highest_sharpe_wei
     merged_portfolio['ValueAfterAction'] = merged_portfolio['ValueAfterAction'].round(
         2)
     merged_portfolio['TargetSharpeWeight'] = merged_portfolio['Symbol'].map(
-        {stock: weight for stock, weight in zip(stocks, highest_sharpe_weights)})*100  # Convert to percentage
+        {stock: weight for stock, weight in zip(stocks, highest_sharpe_weights)})*100
+        # Convert to percentage
     merged_portfolio['ActualWeightAfterAction'] = merged_portfolio['ValueAfterAction'] / \
         (merged_portfolio['ValueAfterAction'].sum()) * \
         100  # Convert to percentage
@@ -58,27 +65,36 @@ def compute_buy_sell_recommendations(current_portfolio, acct, highest_sharpe_wei
     merged_portfolio = merged_portfolio.sort_values(
         by='Buy/Sell', ascending=True)  # Sell first, settle, then buy
 
-    return merged_portfolio[['Symbol', 'Buy/Sell', 'CurrentSharePrice', 'CurrentValue', 'Shares', 'TargetValue',
-                             'ValueAfterAction', 'SharesAfterAction', 'TargetSharpeWeight', 'ActualWeightAfterAction']]
-
+    return merged_portfolio[['Symbol', 'Buy/Sell', 'CurrentSharePrice', 'CurrentValue',
+                             'Shares', 'TargetValue', 'ValueAfterAction', 'SharesAfterAction',
+                             'TargetSharpeWeight', 'ActualWeightAfterAction']]
 
 def get_treasury_data():
+    """Function to get the latest stock prices"""
     api_key = API_KEY
     # Get today's date
     today = datetime.today()
 
-    # Get yesterday's date
-    yesterday = today - timedelta(days=1)
-
+    # Check if today is Monday (0 = Monday, 1 = Tuesday, ..., 6 = Sunday)
+    if today.weekday() == 0:
+        # If today is Monday, set from_date to the previous Friday
+        from_date = (today - timedelta(days=3)).strftime('%Y-%m-%d')
+    else:
+        # Otherwise, set from_date to yesterday
+        from_date = (today - timedelta(days=1)).strftime('%Y-%m-%d')
     # Format the dates in 'YYYY-MM-DD' format
-    from_date = yesterday.strftime('%Y-%m-%d')
+    #from_date = yesterday.strftime('%Y-%m-%d')
     to_date = today.strftime('%Y-%m-%d')
 
     # Construct the URI
-    uri = f"https://financialmodelingprep.com/api/v4/treasury?from={from_date}&to={to_date}&apikey={api_key}"
+    base_url = "https://financialmodelingprep.com/api/v4/treasury"
+    url = f"?from={from_date}&to={to_date}&apikey={api_key}"
+    #uri = f"https://financialmodelingprep.com/api/v4/treasury?
+    # from={from_date}&to={to_date}&apikey={api_key}"
+    uri = f"{base_url}{url}"
 
     # Make the GET request
-    response = requests.get(uri)
+    response = requests.get(uri, timeout=10)
 
     # Return the JSON response
     return response.json()
