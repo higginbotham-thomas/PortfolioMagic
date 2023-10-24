@@ -29,9 +29,8 @@ def compute_buy_sell_recommendations(
     # Calculate Buy/Sell (rounded value)
     buy_sell_shares = \
         {stock: (desired_shares_decimal[stock]) -
-            current_portfolio[current_portfolio['Symbol'] == stock]['Shares'].values[0] \
-            for stock in stocks
-            }
+            current_portfolio[current_portfolio['Symbol'] == stock]['Shares'].values[0]
+            for stock in stocks}
 
     # Merge current portfolio with desired shares
     merged_portfolio = current_portfolio.merge(pd.DataFrame(
@@ -56,7 +55,6 @@ def compute_buy_sell_recommendations(
         2)
     merged_portfolio['TargetSharpeWeight'] = merged_portfolio['Symbol'].map(
         {stock: weight for stock, weight in zip(stocks, highest_sharpe_weights)})*100
-        # Convert to percentage
     merged_portfolio['ActualWeightAfterAction'] = merged_portfolio['ValueAfterAction'] / \
         (merged_portfolio['ValueAfterAction'].sum()) * \
         100  # Convert to percentage
@@ -68,6 +66,7 @@ def compute_buy_sell_recommendations(
     return merged_portfolio[['Symbol', 'Buy/Sell', 'CurrentSharePrice', 'CurrentValue',
                              'Shares', 'TargetValue', 'ValueAfterAction', 'SharesAfterAction',
                              'TargetSharpeWeight', 'ActualWeightAfterAction']]
+
 
 def get_treasury_data():
     """Function to get the latest stock prices"""
@@ -83,13 +82,13 @@ def get_treasury_data():
         # Otherwise, set from_date to yesterday
         from_date = (today - timedelta(days=1)).strftime('%Y-%m-%d')
     # Format the dates in 'YYYY-MM-DD' format
-    #from_date = yesterday.strftime('%Y-%m-%d')
+    # from_date = yesterday.strftime('%Y-%m-%d')
     to_date = today.strftime('%Y-%m-%d')
 
     # Construct the URI
     base_url = "https://financialmodelingprep.com/api/v4/treasury"
     url = f"?from={from_date}&to={to_date}&apikey={api_key}"
-    #uri = f"https://financialmodelingprep.com/api/v4/treasury?
+    # uri = f"https://financialmodelingprep.com/api/v4/treasury?
     # from={from_date}&to={to_date}&apikey={api_key}"
     uri = f"{base_url}{url}"
 
