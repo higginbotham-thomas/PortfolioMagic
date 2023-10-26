@@ -230,7 +230,8 @@ def plot_portfolio_changes(recommendations):
 
     # Round and format the values in the specified columns
     recommendations['Shares'] = recommendations['Shares'].apply(lambda x: f"{x:.4f}")
-    recommendations['SharesAfterAction'] = recommendations['SharesAfterAction'].apply(lambda x: f"{x:.4f}")
+    recommendations['SharesAfterAction'] = recommendations['SharesAfterAction'] \
+        .apply(lambda x: f"{x:.4f}")
     recommendations['TargetSharpeWeight'] = recommendations['TargetSharpeWeight'].round(2)
     recommendations['ActualWeightAfterAction'] = recommendations['ActualWeightAfterAction'].round(2)
 
@@ -245,8 +246,8 @@ def plot_portfolio_changes(recommendations):
         table_data.append(row[1:])
 
     # Add table to the figure
-    _ = ax2.table(cellText=table_data, loc='center', cellLoc='center', colWidths=[0.2] * len(columns),
-                      bbox=[0, 0, 1, 1], fontsize=18)
+    _ = ax2.table(cellText=table_data, loc='center', cellLoc='center', colWidths=[0.2]
+                  * len(columns), bbox=[0, 0, 1, 1], fontsize=18)
 
     # Hide the axes
     ax2.axis('off')
@@ -272,7 +273,7 @@ def plot_risk_scatterplot(portfolio_dfs):
 
 def plot_correlation_matrix(return_stocks):
     '''Function to plot the correlation matrix'''
-    
+
     # Calculate the correlation matrix
     correlation_matrix = return_stocks.corr()
 
