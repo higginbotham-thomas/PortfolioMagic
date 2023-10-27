@@ -11,6 +11,8 @@ Monte Carlo simulation is a statistical technique used to model and analyze the 
 - Market Value: this can be the market value of the assets
 - One blank line following the assets
 - After that blank line, a line with "Account Total" in the Symbol column, and the total market value of the portfolio in the "Market Value" column
+
+Simply open `MVO.ipynb` in a Jupyter notebook, and run all cells.
 # Data Source:
 Portfolio Magic uses the [FinancialModelingPrep API](https://site.financialmodelingprep.com/developer/docs) as the source for all data. A Free plan is available. 
 
@@ -31,3 +33,22 @@ The API Key is stored securely in a .env file. Create a new blank file called .e
 # Notes
 - Every time you run the program, you will get different results.
 - Consult a professional before trading if you are not comfortable with the concepts.
+# Structure
+There are two files, `MVO.ipynb`, and `functions.py`. MVO.ipynb contains the main flow of the program, and functions.py contain the different functions used.
+## Functions
+The file `functions.py` contains a collection of functions that are used for financial analysis and visualization.
+
+### `compute_buy_sell_recommendations`:
+- This function takes in the current portfolio, account value, desired portfolio weights, list of stocks, and historical stock prices as inputs.
+- It computes the desired monetary value of each stock in the portfolio based on the desired weights and the account value.
+- It then calculates the desired number of shares for each stock, and the number of shares to buy or sell to reach the desired portfolio.
+- Finally, it merges the current portfolio with the desired shares and calculates additional information such as current share price, target value, and actual weight after action.
+### `plot_portfolio_recommendations`:
+- This function takes in the recommendations dataframe and plots a table with the recommendations for buying or selling shares of each stock in the portfolio.
+### `plot_risk_scatterplot`:
+- This function takes in a dataframe containing returns and risk values for different portfolios.
+- It plots a scatter plot of returns vs. risk, with the color of each point representing the Sharpe ratio.
+### `plot_correlation_matrix`:
+- This function takes in a dataframe containing returns of different assets.
+It calculates the correlation matrix of the asset returns and plots it as a heatmap.
+
