@@ -10,7 +10,7 @@ import seaborn as sns
 # Function to compute buy/sell recommendations
 def compute_buy_sell_recommendations(
         current_portfolio, acct, highest_sharpe_weights, stocks, stock_history
-        ):
+):
     """Function to compute buy/sell recommendations"""
     # Convert weights to desired monetary value in the portfolio
     desired_values = highest_sharpe_weights * acct
@@ -26,7 +26,7 @@ def compute_buy_sell_recommendations(
     buy_sell_shares = \
         {stock: (desired_shares_decimal[stock]) -
             current_portfolio[current_portfolio['Symbol'] == stock]['Shares'].values[0]
-            for stock in stocks}
+         for stock in stocks}
 
     # Merge current portfolio with desired shares
     merged_portfolio = current_portfolio.merge(pd.DataFrame(
@@ -50,7 +50,7 @@ def compute_buy_sell_recommendations(
     merged_portfolio['ValueAfterAction'] = merged_portfolio['ValueAfterAction'].round(
         2)
     merged_portfolio['TargetSharpeWeight'] = merged_portfolio['Symbol'].map(
-        {stock: weight for stock, weight in zip(stocks, highest_sharpe_weights)})*100
+        {stock: weight for stock, weight in zip(stocks, highest_sharpe_weights)}) * 100
     merged_portfolio['ActualWeightAfterAction'] = merged_portfolio['ValueAfterAction'] / \
         (merged_portfolio['ValueAfterAction'].sum()) * \
         100  # Convert to percentage
@@ -92,7 +92,7 @@ def get_treasury_data(api_key):
 
 
 def get_stock_history(stocks, number_of_days, api_key):
-    '''Function to get the latest stock prices'''
+    """Function to get the latest stock prices"""
     stock_history = {}
     base_url = 'https://financialmodelingprep.com/api/v3/historical-price-full/'
     for stock in stocks:
@@ -122,7 +122,7 @@ def get_stock_history(stocks, number_of_days, api_key):
 
 
 def get_return_stocks(stock_history):
-    '''Function to get returns for the latest stock prices'''
+    """Function to get returns for the latest stock prices"""
     # Concatenate all stock close prices into a single dataframe
     portfolio = pd.concat(stock_history, axis=1)
     # Calculate daily returns
@@ -132,7 +132,7 @@ def get_return_stocks(stock_history):
 
 
 def get_montecarlo_simulation(number_of_portfolios, stocks, return_stocks, trading_days, rf, risk):
-    '''Calculate mean returns and covariances of all assets'''
+    """Calculate mean returns and covariances of all assets"""
     portfolio_returns = []
     portfolio_risk = []
     sharpe_ratio_port = []
@@ -181,7 +181,7 @@ def get_montecarlo_simulation(number_of_portfolios, stocks, return_stocks, tradi
 
 
 def get_recommendations(portfolio_dfs, current_portfolio, acct, stocks, stock_history):
-    '''Function to get the rebalance recommendations'''
+    """Function to get the rebalance recommendations"""
     highest_sharpe_port = portfolio_dfs.iloc[portfolio_dfs['Sharpe Ratio'].idxmax()]
     highest_sharpe_weights = highest_sharpe_port['Portfolio Weights']
 
@@ -191,14 +191,14 @@ def get_recommendations(portfolio_dfs, current_portfolio, acct, stocks, stock_hi
 
     recommendations = recommendations.loc[(recommendations['CurrentValue']
                                            != recommendations['ValueAfterAction']) |
-                                           ((recommendations['CurrentValue'] != 0) &
-                                            (recommendations['ValueAfterAction'] != 0))]
+                                          ((recommendations['CurrentValue'] != 0) &
+                                           (recommendations['ValueAfterAction'] != 0))]
 
     return recommendations
 
 
 def plot_portfolio_metrics(portfolio_dfs, number_of_portfolios, acct, rf, risk):
-    '''Function to plot the portfolio metrics (returns, risk, sharpe ratio)'''
+    """Function to plot the portfolio metrics (returns, risk, sharpe ratio)"""
     highest_sharpe_port = portfolio_dfs.iloc[portfolio_dfs['Sharpe Ratio'].idxmax()]
 
     # First Graphic: Text String Block
@@ -226,7 +226,7 @@ def plot_portfolio_metrics(portfolio_dfs, number_of_portfolios, acct, rf, risk):
 
 
 def plot_portfolio_changes(recommendations):
-    '''Function to plot the portfolio changes'''
+    """Function to plot the portfolio changes"""
 
     # Round and format the values in the specified columns
     recommendations['Shares'] = recommendations['Shares'].apply(lambda x: f"{x:.4f}")
@@ -247,7 +247,8 @@ def plot_portfolio_changes(recommendations):
 
     # Add table to the figure
     _ = ax2.table(cellText=table_data, loc='center', cellLoc='center', colWidths=[0.2]
-                  * len(columns), bbox=[0, 0, 1, 1], fontsize=18)
+                  * len(columns), bbox=[0, 0, 1, 1],
+                  fontsize=18)
 
     # Hide the axes
     ax2.axis('off')
@@ -257,7 +258,7 @@ def plot_portfolio_changes(recommendations):
 
 
 def plot_risk_scatterplot(portfolio_dfs):
-    '''Function to reate a dataframe with the returns and risk value for each portfolio'''
+    """Function to create a dataframe with the returns and risk value for each portfolio"""
     portfolio_returns = portfolio_dfs['Port Returns']
     portfolio_risk = portfolio_dfs['Port Risk']
 
@@ -272,7 +273,7 @@ def plot_risk_scatterplot(portfolio_dfs):
 
 
 def plot_correlation_matrix(return_stocks):
-    '''Function to plot the correlation matrix'''
+    """Function to plot the correlation matrix"""
 
     # Calculate the correlation matrix
     correlation_matrix = return_stocks.corr()
