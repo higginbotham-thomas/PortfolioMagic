@@ -20,7 +20,7 @@ jobs:
         pip install pylint
         pip install requests
         pip install pandas
-        pip install matplotlib.pyplot
+        pip install matplotlib
         pip install numpy
         pip install seaborn
     - name: Analysing the code with pylint
