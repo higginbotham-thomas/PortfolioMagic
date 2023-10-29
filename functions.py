@@ -13,7 +13,7 @@ def compute_buy_sell_recommendations(
 ):
     """Function to compute buy/sell recommendations"""
     # Convert weights to desired monetary value in the portfolio
-    desired_values = highest_sharpe_weights * acct
+    desired_values = np.array(highest_sharpe_weights) * acct  # Convert to NumPy array
 
     # Get the latest stock prices
     current_prices = {stock: stock_history[stock].iloc[-1] for stock in stocks}
@@ -132,48 +132,57 @@ def get_return_stocks(stock_history):
 
 
 def get_montecarlo_simulation(args):
+    """
+    Calculate the portfolio returns, risks, Sharpe ratios, and weights for a given set of parameters.
+
+    Args:
+        args (dict): Dictionary containing the following keys:
+            - number_of_portfolios (int): The number of portfolios to simulate.
+            - stocks (list): List of stock tickers.
+            - return_stocks (DataFrame): DataFrame containing the stock returns.
+            - trading_days (int): The number of trading days in a year.
+            - rf (float): The risk-free rate.
+            - risk (float): The maximum acceptable portfolio risk.
+
+    Returns:
+        DataFrame: A DataFrame containing the portfolio returns, risks, Sharpe ratios, and weights.
+    """
     number_of_portfolios, stocks, return_stocks, trading_days, rf, risk = args.values()
-
-    results = {
-        'portfolio_returns': [],
-        'portfolio_risk': [],
-        'sharpe_ratio_port': [],
-        'portfolio_weights': [],
-    }
-
     matrix_covariance_portfolio = (return_stocks.cov()) * trading_days
+
+    portfolios = {
+        'returns': [],
+        'risks': [],
+        'sharpes': [],
+        'weights': [],
+    }
 
     for _ in range(number_of_portfolios):
         weights = np.random.random_sample(len(stocks))
         weights /= np.sum(weights)
-        annualize_return = np.sum((return_stocks.mean() * weights) * trading_days) - rf
-        results['portfolio_returns'].append(annualize_return)
+        returns = np.sum((return_stocks.mean() * weights) * trading_days) - rf
+        portfolios['returns'].append(returns)
 
         portfolio_variance = np.dot(weights.T, np.dot(matrix_covariance_portfolio, weights))
-        portfolio_standard_deviation = np.sqrt(portfolio_variance)
-        results['portfolio_risk'].append(portfolio_standard_deviation)
+        portfolios['risks'].append(np.sqrt(portfolio_variance))
 
-        sharpe_ratio = (annualize_return - rf) / portfolio_standard_deviation
-        results['sharpe_ratio_port'].append(sharpe_ratio)
+        portfolios['sharpes'].append((returns - rf) / np.sqrt(portfolio_variance))
 
-        results['portfolio_weights'].append(weights)
+        portfolios['weights'].append(weights)
 
-    indices_within_risk = np.where(np.array(results['portfolio_risk']) <= risk)[0]
+    indices_within_risk = np.where(np.array(portfolios['risks']) <= risk)[0]
 
-    for key in results:
-        results[key] = np.array(results[key])[indices_within_risk]
-
-    portfolio_dfs = pd.DataFrame({
-        'Port Returns': results['portfolio_returns'],
-        'Port Risk': results['portfolio_risk'],
-        'Sharpe Ratio': results['sharpe_ratio_port'],
-        'Portfolio Weights': list(results['portfolio_weights']),
+    df = pd.DataFrame({
+        'Port Returns': np.array(portfolios['returns'])[indices_within_risk],
+        'Port Risk': np.array(portfolios['risks'])[indices_within_risk],
+        'Sharpe Ratio': np.array(portfolios['sharpes'])[indices_within_risk],
+        'Portfolio Weights': np.array(portfolios['weights'])[indices_within_risk].tolist(),
     })
 
     for col in ['Port Returns', 'Port Risk', 'Sharpe Ratio']:
-        portfolio_dfs[col] = portfolio_dfs[col].astype(float)
+        df[col] = df[col].astype(float)
 
-    return portfolio_dfs
+    return df
 
 
 def get_recommendations(portfolio_dfs, current_portfolio, acct, stocks, stock_history):
