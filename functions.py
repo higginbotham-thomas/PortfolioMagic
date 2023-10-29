@@ -36,7 +36,7 @@ def compute_buy_sell_recommendations(
     merged_portfolio['CurrentSharePrice'] = merged_portfolio['Symbol'].map(
         current_prices)
     merged_portfolio['TargetValue'] = merged_portfolio['Symbol'].map(
-        {stock: value for stock, value in zip(stocks, desired_values)})
+        dict(zip(stocks, desired_values)))
     merged_portfolio['TargetValue'] = merged_portfolio['TargetValue'].round(2)
     merged_portfolio['CurrentValue'] = merged_portfolio['Shares'] * \
         merged_portfolio['CurrentSharePrice']
@@ -50,7 +50,7 @@ def compute_buy_sell_recommendations(
     merged_portfolio['ValueAfterAction'] = merged_portfolio['ValueAfterAction'].round(
         2)
     merged_portfolio['TargetSharpeWeight'] = merged_portfolio['Symbol'].map(
-        {stock: weight for stock, weight in zip(stocks, highest_sharpe_weights)}) * 100
+        dict(zip(stocks, highest_sharpe_weights))) * 100
     merged_portfolio['ActualWeightAfterAction'] = merged_portfolio['ValueAfterAction'] / \
         (merged_portfolio['ValueAfterAction'].sum()) * \
         100  # Convert to percentage
