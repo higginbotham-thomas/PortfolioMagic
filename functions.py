@@ -70,7 +70,7 @@ def get_treasury_data(api_key):
     today = datetime.today()
 
     # Check if today is Monday (0 = Monday, 1 = Tuesday, ..., 6 = Sunday)
-    if today.weekday() == 0:
+    if today.weekday() in [0,6]:
         # If today is Monday, set from_date to the previous Friday
         from_date = (today - timedelta(days=3)).strftime('%Y-%m-%d')
     else:
