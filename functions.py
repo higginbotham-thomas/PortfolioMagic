@@ -131,7 +131,8 @@ def get_return_stocks(stock_history):
     return return_stocks
 
 
-def get_montecarlo_simulation(number_of_portfolios, stocks, return_stocks, trading_days, rf, risk):
+def get_montecarlo_simulation(args):
+    number_of_portfolios, stocks, return_stocks, trading_days, rf, risk = args.values()
     """Calculate mean returns and covariances of all assets"""
     portfolio_returns = []
     portfolio_risk = []
