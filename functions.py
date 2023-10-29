@@ -70,7 +70,7 @@ def get_treasury_data(api_key):
     today = datetime.today()
 
     # Check if today is Monday (0 = Monday, 1 = Tuesday, ..., 6 = Sunday)
-    if today.weekday() in [0,6]:
+    if today.weekday() in [0, 6]:
         # If today is Monday, set from_date to the previous Friday
         from_date = (today - timedelta(days=3)).strftime('%Y-%m-%d')
     else:
@@ -133,48 +133,43 @@ def get_return_stocks(stock_history):
 
 def get_montecarlo_simulation(args):
     number_of_portfolios, stocks, return_stocks, trading_days, rf, risk = args.values()
-    """Calculate mean returns and covariances of all assets"""
-    portfolio_returns = []
-    portfolio_risk = []
-    sharpe_ratio_port = []
-    portfolio_weights = []
+
+    results = {
+        'portfolio_returns': [],
+        'portfolio_risk': [],
+        'sharpe_ratio_port': [],
+        'portfolio_weights': [],
+    }
+
+    matrix_covariance_portfolio = (return_stocks.cov()) * trading_days
 
     for _ in range(number_of_portfolios):
         weights = np.random.random_sample(len(stocks))
-        weights = weights / np.sum(weights)
+        weights /= np.sum(weights)
         annualize_return = np.sum((return_stocks.mean() * weights) * trading_days) - rf
-        portfolio_returns.append(annualize_return)
+        results['portfolio_returns'].append(annualize_return)
 
-        matrix_covariance_portfolio = (return_stocks.cov()) * trading_days
         portfolio_variance = np.dot(weights.T, np.dot(matrix_covariance_portfolio, weights))
         portfolio_standard_deviation = np.sqrt(portfolio_variance)
-        portfolio_risk.append(portfolio_standard_deviation)
+        results['portfolio_risk'].append(portfolio_standard_deviation)
 
         sharpe_ratio = (annualize_return - rf) / portfolio_standard_deviation
-        sharpe_ratio_port.append(sharpe_ratio)
+        results['sharpe_ratio_port'].append(sharpe_ratio)
 
-        portfolio_weights.append(weights)
+        results['portfolio_weights'].append(weights)
 
-    # Convert lists to arrays outside the loop
-    portfolio_risk = np.array(portfolio_risk)
-    portfolio_returns = np.array(portfolio_returns)
-    sharpe_ratio_port = np.array(sharpe_ratio_port)
+    indices_within_risk = np.where(np.array(results['portfolio_risk']) <= risk)[0]
 
-    # Filtering portfolios by RISK
-    indices_within_risk = np.where(portfolio_risk <= risk)[0]
+    for key in results:
+        results[key] = np.array(results[key])[indices_within_risk]
 
-    portfolio_risk = portfolio_risk[indices_within_risk]
-    portfolio_returns = portfolio_returns[indices_within_risk]
-    sharpe_ratio_port = sharpe_ratio_port[indices_within_risk]
-    portfolio_weights = np.array(portfolio_weights)[indices_within_risk]
+    portfolio_dfs = pd.DataFrame({
+        'Port Returns': results['portfolio_returns'],
+        'Port Risk': results['portfolio_risk'],
+        'Sharpe Ratio': results['sharpe_ratio_port'],
+        'Portfolio Weights': list(results['portfolio_weights']),
+    })
 
-    porfolio_metrics = [portfolio_returns, portfolio_risk, sharpe_ratio_port, portfolio_weights]
-    portfolio_dfs = pd.DataFrame(porfolio_metrics).T
-
-    # Rename the columns:
-    portfolio_dfs.columns = ['Port Returns', 'Port Risk', 'Sharpe Ratio', 'Portfolio Weights']
-
-    # Convert from object to float the first three columns.
     for col in ['Port Returns', 'Port Risk', 'Sharpe Ratio']:
         portfolio_dfs[col] = portfolio_dfs[col].astype(float)
 
