@@ -133,7 +133,8 @@ def get_return_stocks(stock_history):
 
 def get_montecarlo_simulation(args):
     """
-    Calculate the portfolio returns, risks, Sharpe ratios, and weights for a given set of parameters.
+    Calculate the portfolio returns, risks, Sharpe ratios,
+    and weights for a given set of parameters.
 
     Args:
         args (dict): Dictionary containing the following keys:
