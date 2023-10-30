@@ -6,3 +6,4 @@ __pycache__/
 
 # Ignore the .idea directory
 .idea/
+sample_portfolio.csv
