@@ -16,7 +16,7 @@ def compute_buy_sell_recommendations(
     desired_values = np.array(highest_sharpe_weights) * acct  # Convert to NumPy array
 
     # Get the latest stock prices
-    current_prices = {stock: stock_history[stock].iloc[-1] for stock in stocks}
+    current_prices = {stock: stock_history[stock].iloc[1] for stock in stocks}
 
     # Calculate desired shares (decimal value)
     desired_shares_decimal = {
